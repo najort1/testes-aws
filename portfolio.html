@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduardo Oliveira — Full Stack Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { inter: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #050505; color: #ffffff; overflow-x: hidden; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #525252; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #737373; }
+
+        /* Noise texture overlay */
+        .noise-overlay {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* Fade-in animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); filter: blur(6px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-40px); filter: blur(4px); }
+            to { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(40px); filter: blur(4px); }
+            to { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); filter: blur(4px); }
+            to { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); }
+            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.3); }
+        }
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink {
+            0%, 100% { border-color: transparent; }
+            50% { border-color: #818cf8; }
+        }
+        @keyframes orb-move {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 15px) scale(0.95); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        @keyframes count-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scroll-triggered animation classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            filter: blur(6px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+        .animate-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            filter: blur(4px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+            filter: blur(0);
+        }
+        .animate-right {
+            opacity: 0;
+            transform: translateX(40px);
+            filter: blur(4px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+            filter: blur(0);
+        }
+        .animate-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            filter: blur(4px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+        }
+
+        /* Stagger delays */
+        .delay-100 { transition-delay: 100ms !important; }
+        .delay-200 { transition-delay: 200ms !important; }
+        .delay-300 { transition-delay: 300ms !important; }
+        .delay-400 { transition-delay: 400ms !important; }
+        .delay-500 { transition-delay: 500ms !important; }
+        .delay-600 { transition-delay: 600ms !important; }
+        .delay-700 { transition-delay: 700ms !important; }
+        .delay-800 { transition-delay: 800ms !important; }
+
+        /* Hero entrance */
+        .hero-name { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+        .hero-title { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+        .hero-desc { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both; }
+        .hero-cta { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both; }
+        .hero-badge { animation: fadeInScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s both; }
+        .nav-fade { animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+
+        /* Glow orb */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            animation: orb-move 12s ease-in-out infinite;
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8, #c084fc, #818cf8);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 4s ease infinite;
+        }
+
+        /* Card hover effect */
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .card-hover:hover {
+            border-color: rgba(129, 140, 248, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Project card with spotlight */
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(129, 140, 248, 0.06), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 1;
+        }
+        .project-card:hover::before { opacity: 1; }
+        .project-card:hover {
+            border-color: rgba(129, 140, 248, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12);
+        }
+
+        /* Skill tag hover */
+        .skill-tag {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .skill-tag:hover {
+            border-color: rgba(129, 140, 248, 0.4);
+            background: rgba(129, 140, 248, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Timeline line */
+        .timeline-line {
+            position: absolute;
+            left: 19px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(129, 140, 248, 0.3), rgba(129, 140, 248, 0.05), transparent);
+        }
+
+        /* Timeline dot */
+        .timeline-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            border: 2px solid #818cf8;
+            background: #050505;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        .timeline-dot.active, .timeline-item:hover .timeline-dot {
+            background: #818cf8;
+            box-shadow: 0 0 12px rgba(129, 140, 248, 0.5);
+        }
+
+        /* Button shine effect */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s;
+        }
+        .btn-shine:hover::after {
+            left: 100%;
+        }
+
+        /* Nav link underline */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: #818cf8;
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Bug bounty badge shimmer */
+        .shimmer-badge {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        /* Floating icon */
+        .float-icon {
+            animation: float 4s ease-in-out infinite;
+        }
+        .float-icon-delay {
+            animation: float 4s ease-in-out 1s infinite;
+        }
+
+        /* Section divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(129, 140, 248, 0.2), transparent);
+        }
+
+        /* Glass panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Contact icon container */
+        .contact-icon-wrap {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .contact-icon-wrap:hover {
+            background: rgba(129, 140, 248, 0.15);
+            border-color: rgba(129, 140, 248, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Skill category card */
+        .skill-category {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .skill-category:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(129, 140, 248, 0.15);
+        }
+
+        /* Smooth scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Mobile menu */
+        .mobile-menu {
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .mobile-menu.open {
+            transform: translateY(0);
+        }
+
+        /* Stacked card effect */
+        .stack-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Toast notification */
+        .toast {
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .toast-exit {
+            animation: fadeOutDown 0.3s ease forwards;
+        }
+        @keyframes fadeOutDown {
+            to { opacity: 0; transform: translateY(20px); }
+        }
+    </style>
+</head>
+<body class="font-inter antialiased">
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Background Orbs -->
+    <div class="glow-orb" style="width: 500px; height: 500px; background: rgba(99,102,241,0.07); top: -10%; right: -10%;"></div>
+    <div class="glow-orb" style="width: 400px; height: 400px; background: rgba(168,85,247,0.05); bottom: 20%; left: -5%; animation-delay: -4s;"></div>
+    <div class="glow-orb" style="width: 350px; height: 350px; background: rgba(99,102,241,0.04); top: 50%; right: 10%; animation-delay: -8s;"></div>
+
+    <!-- Navigation -->
+    <nav class="nav-fade fixed top-0 left-0 right-0 z-50 border-b border-white/5" style="background: rgba(5,5,5,0.8); backdrop-filter: blur(20px);">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#hero" class="text-lg font-semibold tracking-tight">
+                <span class="gradient-text">EO</span>
+                <span class="text-neutral-500 font-light ml-1 hidden sm:inline">| Eduardo Oliveira</span>
+            </a>
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#sobre" class="nav-link text-sm text-neutral-400 hover:text-white transition-colors">Sobre</a>
+                <a href="#experiencia" class="nav-link text-sm text-neutral-400 hover:text-white transition-colors">Experiência</a>
+                <a href="#habilidades" class="nav-link text-sm text-neutral-400 hover:text-white transition-colors">Habilidades</a>
+                <a href="#projetos" class="nav-link text-sm text-neutral-400 hover:text-white transition-colors">Projetos</a>
+                <a href="#educacao" class="nav-link text-sm text-neutral-400 hover:text-white transition-colors">Educação</a>
+                <a href="#contato" class="btn-shine px-5 py-2 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-sm text-indigo-300 hover:bg-indigo-500/20 transition-all">
+                    Contato
+                </a>
+            </div>
+            <!-- Mobile Hamburger -->
+            <button id="menu-toggle" class="md:hidden p-2 text-neutral-400 hover:text-white transition-colors" aria-label="Menu">
+                <iconify-icon icon="lucide:menu" width="22"></iconify-icon>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden fixed top-[65px] left-0 right-0 border-b border-white/5" style="background: rgba(5,5,5,0.95); backdrop-filter: blur(20px);">
+            <div class="px-6 py-6 flex flex-col gap-4">
+                <a href="#sobre" class="mobile-link text-neutral-300 hover:text-white transition-colors py-2">Sobre</a>
+                <a href="#experiencia" class="mobile-link text-neutral-300 hover:text-white transition-colors py-2">Experiência</a>
+                <a href="#habilidades" class="mobile-link text-neutral-300 hover:text-white transition-colors py-2">Habilidades</a>
+                <a href="#projetos" class="mobile-link text-neutral-300 hover:text-white transition-colors py-2">Projetos</a>
+                <a href="#educacao" class="mobile-link text-neutral-300 hover:text-white transition-colors py-2">Educação</a>
+                <a href="#contato" class="mobile-link text-indigo-400 hover:text-indigo-300 transition-colors py-2 font-medium">Contato</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center px-6 pt-20 overflow-hidden">
+        <div class="max-w-6xl mx-auto w-full text-center relative z-10">
+            <!-- Bug Bounty Badge -->
+            <div class="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 mb-8 shimmer-badge">
+                <iconify-icon icon="lucide:shield-check" width="16" class="text-emerald-400"></iconify-icon>
+                <span class="text-xs font-medium text-emerald-300 tracking-wide">Bug Bounty — Vulnerabilidade Crítica Identificada</span>
+            </div>
+
+            <!-- Name -->
+            <h1 class="hero-name text-4xl sm:text-5xl md:text-7xl font-medium tracking-tight leading-[1.1] mb-6">
+                Eduardo<br>
+                <span class="gradient-text">Oliveira da Silva</span>
+            </h1>
+
+            <!-- Title -->
+            <p class="hero-title text-lg sm:text-xl md:text-2xl font-light text-neutral-400 mb-6 tracking-tight">
+                Desenvolvedor Full Stack
+            </p>
+
+            <!-- Description -->
+            <p class="hero-desc max-w-2xl mx-auto text-sm sm:text-base font-light text-neutral-500 leading-relaxed mb-10">
+                Criando aplicações modernas, automações e plataformas no-code. 
+                Foco em React, Angular, Node.js e arquitetura de sistemas escaláveis. 
+                Em formação AWS com ênfase em cloud computing e segurança.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#projetos" class="btn-shine px-8 py-3.5 bg-white text-black rounded-full text-sm font-medium hover:bg-neutral-200 transition-all hover:shadow-lg hover:shadow-white/10">
+                    Ver Projetos
+                    <iconify-icon icon="lucide:arrow-down" width="16" class="ml-1 inline-block"></iconify-icon>
+                </a>
+                <a href="#contato" class="px-8 py-3.5 border border-white/10 rounded-full text-sm font-medium text-neutral-300 hover:bg-white/5 hover:border-white/20 transition-all">
+                    Entrar em Contato
+                </a>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40" style="animation: fadeInUp 1s 1.5s both;">
+                <span class="text-[10px] tracking-widest uppercase text-neutral-500">Scroll</span>
+                <div class="w-5 h-8 rounded-full border border-neutral-600 flex justify-center pt-1.5">
+                    <div class="w-1 h-2 bg-neutral-500 rounded-full" style="animation: float 2s ease-in-out infinite;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Resumo Profissional -->
+    <section id="sobre" class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">01 — Sobre</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">Resumo Profissional</h2>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-12 items-start">
+                <!-- Left: Main text -->
+                <div class="md:col-span-3 animate-on-scroll delay-100">
+                    <p class="text-base font-light text-neutral-300 leading-relaxed mb-6">
+                        Desenvolvedor Full Stack com foco em aplicações modernas, automação e criação de plataformas no-code. Experiência sólida com <span class="text-white font-normal">React</span>, <span class="text-white font-normal">Angular</span>, <span class="text-white font-normal">Node.js</span> e arquitetura de sistemas escaláveis.
+                    </p>
+                    <p class="text-base font-light text-neutral-400 leading-relaxed mb-6">
+                        Atualmente em formação em <span class="text-indigo-300">AWS</span>, com foco em cloud computing, backend e segurança de aplicações. Reconhecido por identificar vulnerabilidade crítica em grande instituição através de Bug Bounty, evitando potencial vazamento massivo de dados.
+                    </p>
+                    <p class="text-base font-light text-neutral-400 leading-relaxed">
+                        Criador do <span class="text-white font-normal">TooManyBots</span> — plataforma no-code para automação de bots com interpretador de fluxos em tempo real e integração com WhatsApp.
+                    </p>
+                </div>
+
+                <!-- Right: Quick stats -->
+                <div class="md:col-span-2 space-y-4">
+                    <div class="animate-on-scroll delay-200 card-hover glass-panel rounded-2xl p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                            <iconify-icon icon="lucide:shield" width="18" class="text-indigo-400"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-white">Bug Bounty</p>
+                            <p class="text-xs text-neutral-500">Vulnerabilidade crítica identificada</p>
+                        </div>
+                    </div>
+                    <div class="animate-on-scroll delay-300 card-hover glass-panel rounded-2xl p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                            <iconify-icon icon="lucide:bot" width="18" class="text-purple-400"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-white">TooManyBots</p>
+                            <p class="text-xs text-neutral-500">Plataforma No-Code para automação</p>
+                        </div>
+                    </div>
+                    <div class="animate-on-scroll delay-400 card-hover glass-panel rounded-2xl p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                            <iconify-icon icon="lucide:cloud" width="18" class="text-emerald-400"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-white">AWS em Formação</p>
+                            <p class="text-xs text-neutral-500">Cloud Computing & DevSecOps</p>
+                        </div>
+                    </div>
+                    <div class="animate-on-scroll delay-500 card-hover glass-panel rounded-2xl p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                            <iconify-icon icon="lucide:calendar" width="18" class="text-amber-400"></iconify-icon>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-white">5+ anos</p>
+                            <p class="text-xs text-neutral-500">Experiência em desenvolvimento</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiência Profissional -->
+    <section id="experiencia" class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">02 — Experiência</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">Experiência Profissional</h2>
+            </div>
+
+            <div class="relative space-y-0">
+                <!-- Timeline Line -->
+                <div class="timeline-line hidden md:block"></div>
+
+                <!-- Experience 1 -->
+                <div class="timeline-item animate-on-scroll delay-100 relative flex gap-6 pb-12 group">
+                    <div class="hidden md:flex flex-col items-center pt-1.5">
+                        <div class="timeline-dot active"></div>
+                    </div>
+                    <div class="flex-1 card-hover glass-panel rounded-2xl p-6 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                            <div>
+                                <h3 class="text-lg font-medium text-white">Desenvolvedor Full Stack (Django)</h3>
+                                <p class="text-sm text-indigo-400 font-medium">Proglogic</p>
+                            </div>
+                            <span class="text-xs font-medium text-neutral-500 bg-white/5 px-3 py-1 rounded-full whitespace-nowrap self-start">Ago 2025 – Dez 2025</span>
+                        </div>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-indigo-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Desenvolvimento de sistema ERP com Django
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-indigo-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Criação de APIs e integração frontend/backend
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-indigo-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Aplicação de boas práticas (CBVs, Forms, Managers)
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-indigo-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Foco em performance e escalabilidade
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-indigo-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Reconhecimento por qualidade e agilidade nas entregas
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience 2 -->
+                <div class="timeline-item animate-on-scroll delay-300 relative flex gap-6 pb-4 group">
+                    <div class="hidden md:flex flex-col items-center pt-1.5">
+                        <div class="timeline-dot"></div>
+                    </div>
+                    <div class="flex-1 card-hover glass-panel rounded-2xl p-6 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                            <div>
+                                <h3 class="text-lg font-medium text-white">Desenvolvedor Autônomo</h3>
+                                <p class="text-sm text-purple-400 font-medium">Projetos e Automações</p>
+                            </div>
+                            <span class="text-xs font-medium text-neutral-500 bg-white/5 px-3 py-1 rounded-full whitespace-nowrap self-start">Jan 2020 – Atual</span>
+                        </div>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-purple-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Desenvolvimento da plataforma TooManyBots
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-purple-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Estudo e prática em AWS, automação e backend
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:chevron-right" width="14" class="text-purple-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Evolução de projetos próprios e arquitetura de sistemas
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Habilidades Técnicas -->
+    <section id="habilidades" class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">03 — Habilidades</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">Competências Técnicas</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Frontend -->
+                <div class="animate-on-scroll delay-100 skill-category glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                            <iconify-icon icon="lucide:layout" width="17" class="text-blue-400"></iconify-icon>
+                        </div>
+                        <h3 class="text-sm font-medium text-white">Frontend</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">React</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Angular</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">HTML</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">CSS</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">JavaScript</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Tailwind</span>
+                    </div>
+                </div>
+
+                <!-- Backend -->
+                <div class="animate-on-scroll delay-200 skill-category glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <iconify-icon icon="lucide:server" width="17" class="text-emerald-400"></iconify-icon>
+                        </div>
+                        <h3 class="text-sm font-medium text-white">Backend</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Node.js</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Python</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Flask</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Django</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Java</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Spring Boot</span>
+                    </div>
+                </div>
+
+                <!-- Banco de Dados -->
+                <div class="animate-on-scroll delay-300 skill-category glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                            <iconify-icon icon="lucide:database" width="17" class="text-amber-400"></iconify-icon>
+                        </div>
+                        <h3 class="text-sm font-medium text-white">Banco de Dados</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">PostgreSQL</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">MySQL</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">MongoDB</span>
+                    </div>
+                </div>
+
+                <!-- Cloud & DevOps -->
+                <div class="animate-on-scroll delay-400 skill-category glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-9 h-9 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                            <iconify-icon icon="lucide:cloud" width="17" class="text-cyan-400"></iconify-icon>
+                        </div>
+                        <h3 class="text-sm font-medium text-white">Cloud & DevOps</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">AWS</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">APIs REST</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Automação</span>
+                    </div>
+                </div>
+
+                <!-- Segurança -->
+                <div class="animate-on-scroll delay-500 skill-category glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center">
+                            <iconify-icon icon="lucide:shield" width="17" class="text-red-400"></iconify-icon>
+                        </div>
+                        <h3 class="text-sm font-medium text-white">Segurança</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Pentest</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Criptografia</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">DevSecOps</span>
+                    </div>
+                </div>
+
+                <!-- Dados & IA -->
+                <div class="animate-on-scroll delay-600 skill-category glass-panel rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                            <iconify-icon icon="lucide:brain" width="17" class="text-violet-400"></iconify-icon>
+                        </div>
+                        <h3 class="text-sm font-medium text-white">Dados & IA</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">ETL</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Análise de Dados</span>
+                        <span class="skill-tag px-3 py-1.5 rounded-lg bg-white/5 text-xs text-neutral-300">Machine Learning</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soft Skills -->
+            <div class="animate-on-scroll delay-700 mt-10 glass-panel rounded-2xl p-6 sm:p-8">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                        <iconify-icon icon="lucide:users" width="17" class="text-indigo-400"></iconify-icon>
+                    </div>
+                    <h3 class="text-sm font-medium text-white">Competências Comportamentais</h3>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/5 border border-indigo-500/10 text-sm text-indigo-300">
+                        <iconify-icon icon="lucide:message-circle" width="14"></iconify-icon> Comunicação
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/5 border border-indigo-500/10 text-sm text-indigo-300">
+                        <iconify-icon icon="lucide:users" width="14"></iconify-icon> Trabalho em equipe
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/5 border border-indigo-500/10 text-sm text-indigo-300">
+                        <iconify-icon icon="lucide:zap" width="14"></iconify-icon> Proatividade
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/5 border border-indigo-500/10 text-sm text-indigo-300">
+                        <iconify-icon icon="lucide:puzzle" width="14"></iconify-icon> Resolução de problemas
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projetos -->
+    <section id="projetos" class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">04 — Projetos</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">Projetos em Destaque</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- TooManyBots — Featured -->
+                <div class="animate-on-scroll delay-100 md:col-span-2 project-card glass-panel rounded-2xl p-8 relative">
+                    <div class="relative z-10">
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-[10px] font-medium text-emerald-400 tracking-wider uppercase">Principal</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-indigo-500/10 text-[10px] font-medium text-indigo-400 tracking-wider uppercase">No-Code</span>
+                                </div>
+                                <h3 class="text-xl font-medium text-white">TooManyBots</h3>
+                                <p class="text-sm text-neutral-500 mt-1">Plataforma No-Code para automação de bots</p>
+                            </div>
+                            <span class="text-xs text-neutral-500 bg-white/5 px-3 py-1 rounded-full whitespace-nowrap self-start">Mar 2026 – Atual</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-5">
+                            <span class="px-2.5 py-1 rounded-md bg-blue-500/10 text-xs text-blue-300">Node.js</span>
+                            <span class="px-2.5 py-1 rounded-md bg-cyan-500/10 text-xs text-cyan-300">React</span>
+                            <span class="px-2.5 py-1 rounded-md bg-red-500/10 text-xs text-red-300">Angular</span>
+                        </div>
+                        <ul class="space-y-2.5">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check-circle" width="15" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Interpretador de fluxos em tempo real com múltiplas sessões
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check-circle" width="15" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Arquitetura modular (engine, handlers, runtime)
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check-circle" width="15" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Gerenciamento de estado por usuário + dashboard
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check-circle" width="15" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Integração com WhatsApp via Baileys
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- chupe-bank -->
+                <div class="animate-on-scroll delay-200 project-card glass-panel rounded-2xl p-6 sm:p-8 relative">
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:landmark" width="18" class="text-emerald-400"></iconify-icon>
+                            </div>
+                            <span class="text-xs text-neutral-500 bg-white/5 px-3 py-1 rounded-full">Dez 2024 – Jan 2025</span>
+                        </div>
+                        <h3 class="text-lg font-medium text-white mb-1">Sistema Bancário Fullstack</h3>
+                        <p class="text-xs text-neutral-500 mb-4">chupe-bank</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-xs text-emerald-300">Spring Boot</span>
+                            <span class="px-2.5 py-1 rounded-md bg-cyan-500/10 text-xs text-cyan-300">React</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Backend em camadas + APIs REST
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Autenticação JWT e criptografia
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-emerald-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Integração frontend/backend
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- alexa-ollama -->
+                <div class="animate-on-scroll delay-300 project-card glass-panel rounded-2xl p-6 sm:p-8 relative">
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:brain" width="18" class="text-violet-400"></iconify-icon>
+                            </div>
+                            <span class="text-xs text-neutral-500 bg-white/5 px-3 py-1 rounded-full">Mai 2025</span>
+                        </div>
+                        <h3 class="text-lg font-medium text-white mb-1">alexa-ollama</h3>
+                        <p class="text-xs text-neutral-500 mb-4">IA Local</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded-md bg-yellow-500/10 text-xs text-yellow-300">Python</span>
+                            <span class="px-2.5 py-1 rounded-md bg-neutral-500/10 text-xs text-neutral-300">Flask</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-violet-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Integração com LLM local (Ollama)
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-violet-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Memória de sessão + API HTTP
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CHARADA-BOT -->
+                <div class="animate-on-scroll delay-400 project-card glass-panel rounded-2xl p-6 sm:p-8 relative">
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:bot" width="18" class="text-amber-400"></iconify-icon>
+                            </div>
+                            <span class="text-xs text-neutral-500 bg-white/5 px-3 py-1 rounded-full">Set 2024</span>
+                        </div>
+                        <h3 class="text-lg font-medium text-white mb-1">CHARADA-BOT</h3>
+                        <p class="text-xs text-neutral-500 mb-4">Automação</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded-md bg-yellow-500/10 text-xs text-yellow-300">Python</span>
+                            <span class="px-2.5 py-1 rounded-md bg-orange-500/10 text-xs text-orange-300">Selenium</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-amber-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Automação web + lógica de filtragem
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- projetoDemoDay -->
+                <div class="animate-on-scroll delay-500 project-card glass-panel rounded-2xl p-6 sm:p-8 relative">
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:briefcase" width="18" class="text-pink-400"></iconify-icon>
+                            </div>
+                            <span class="text-xs text-neutral-500 bg-white/5 px-3 py-1 rounded-full">Ago 2024 – Dez 2024</span>
+                        </div>
+                        <h3 class="text-lg font-medium text-white mb-1">Plataforma de Vagas</h3>
+                        <p class="text-xs text-neutral-500 mb-4">projetoDemoDay — Projeto em equipe</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded-md bg-red-500/10 text-xs text-red-300">Java</span>
+                            <span class="px-2.5 py-1 rounded-md bg-cyan-500/10 text-xs text-cyan-300">React</span>
+                        </div>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-pink-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Desenvolvimento em equipe (5 desenvolvedores)
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-pink-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Apresentada em evento com destaque e visibilidade pública
+                            </li>
+                            <li class="flex items-start gap-3 text-sm font-light text-neutral-400">
+                                <iconify-icon icon="lucide:check" width="14" class="text-pink-500 mt-0.5 flex-shrink-0"></iconify-icon>
+                                Cadastro, dashboard e integração frontend/backend
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diferenciais -->
+    <section class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">05 — Diferenciais</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">O que me diferencia</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="animate-on-scroll delay-100 card-hover glass-panel rounded-2xl p-6 group">
+                    <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center mb-4 group-hover:bg-red-500/20 transition-colors">
+                        <iconify-icon icon="lucide:shield-alert" width="18" class="text-red-400"></iconify-icon>
+                    </div>
+                    <h3 class="text-sm font-medium text-white mb-2">Cibersegurança Avançada</h3>
+                    <p class="text-xs font-light text-neutral-500 leading-relaxed">Conhecimento avançado em pentest, Burp Suite, sqlmap e automação de segurança com Python e Bash</p>
+                </div>
+
+                <div class="animate-on-scroll delay-200 card-hover glass-panel rounded-2xl p-6 group">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:bg-amber-500/20 transition-colors">
+                        <iconify-icon icon="lucide:key" width="18" class="text-amber-400"></iconify-icon>
+                    </div>
+                    <h3 class="text-sm font-medium text-white mb-2">Autenticação & Criptografia</h3>
+                    <p class="text-xs font-light text-neutral-500 leading-relaxed">Implementação de autenticação segura, criptografia e hardening de APIs em produção</p>
+                </div>
+
+                <div class="animate-on-scroll delay-300 card-hover glass-panel rounded-2xl p-6 group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition-colors">
+                        <iconify-icon icon="lucide:trophy" width="18" class="text-emerald-400"></iconify-icon>
+                    </div>
+                    <h3 class="text-sm font-medium text-white mb-2">Bug Bounty Achieved</h3>
+                    <p class="text-xs font-light text-neutral-500 leading-relaxed">Identificação de vulnerabilidade crítica em grande instituição (SP) — evitou vazamento massivo de dados. Reconhecimento público por CISO</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Educação -->
+    <section id="educacao" class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">06 — Educação</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">Formação Acadêmica</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- PROPROFISSÃO -->
+                <div class="animate-on-scroll delay-100 card-hover glass-panel rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-indigo-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="relative">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:graduation-cap" width="16" class="text-indigo-400"></iconify-icon>
+                            </div>
+                            <span class="text-[10px] tracking-wider uppercase text-indigo-400 font-medium">Instituto Proa</span>
+                        </div>
+                        <h3 class="text-sm font-medium text-white mb-1">PROPROFISSÃO</h3>
+                        <p class="text-xs text-neutral-500">Formação em Desenvolvimento de Sistemas</p>
+                    </div>
+                </div>
+
+                <!-- SENAC -->
+                <div class="animate-on-scroll delay-200 card-hover glass-panel rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="relative">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:code" width="16" class="text-emerald-400"></iconify-icon>
+                            </div>
+                            <span class="text-[10px] tracking-wider uppercase text-emerald-400 font-medium">SENAC</span>
+                        </div>
+                        <h3 class="text-sm font-medium text-white mb-1">Desenvolvimento Web Java</h3>
+                        <p class="text-xs text-neutral-500">320 horas</p>
+                    </div>
+                </div>
+
+                <!-- Alura + Oracle ONE -->
+                <div class="animate-on-scroll delay-300 card-hover glass-panel rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-violet-500/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="relative">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                                <iconify-icon icon="lucide:bar-chart-3" width="16" class="text-violet-400"></iconify-icon>
+                            </div>
+                            <span class="text-[10px] tracking-wider uppercase text-violet-400 font-medium">Alura + Oracle ONE</span>
+                        </div>
+                        <h3 class="text-sm font-medium text-white mb-1">Especialização em Data Science</h3>
+                        <p class="text-xs text-neutral-500">348 horas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="relative px-6 py-24">
+        <div class="section-divider max-w-6xl mx-auto mb-24"></div>
+        <div class="max-w-6xl mx-auto">
+            <div class="animate-on-scroll mb-16 text-center">
+                <span class="text-[10px] tracking-[0.2em] uppercase text-indigo-400 font-medium">07 — Contato</span>
+                <h2 class="text-2xl sm:text-3xl font-medium tracking-tight mt-3">Vamos conversar?</h2>
+                <p class="text-sm text-neutral-500 mt-3 max-w-md mx-auto">Estou sempre aberto a novas oportunidades e colaborações. Entre em contato!</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                <!-- Email -->
+                <a href="mailto:eduardooliveirasilva9946@gmail.com" class="animate-on-scroll delay-100 contact-icon-wrap glass-panel rounded-2xl p-6 text-center group block" aria-label="Email">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/20 transition-colors">
+                        <iconify-icon icon="lucide:mail" width="20" class="text-indigo-400"></iconify-icon>
+                    </div>
+                    <p class="text-xs font-medium text-white mb-1">Email</p>
+                    <p class="text-[10px] text-neutral-500 leading-relaxed">eduardooliveira<br>silva9946@gmail.com</p>
+                </a>
+
+                <!-- Telefone -->
+                <a href="tel:+558199462399" class="animate-on-scroll delay-200 contact-icon-wrap glass-panel rounded-2xl p-6 text-center group block" aria-label="Telefone">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-emerald-500/20 transition-colors">
+                        <iconify-icon icon="lucide:phone" width="20" class="text-emerald-400"></iconify-icon>
+                    </div>
+                    <p class="text-xs font-medium text-white mb-1">Telefone</p>
+                    <p class="text-[10px] text-neutral-500">(81) 9 9946-2399</p>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="#" class="animate-on-scroll delay-300 contact-icon-wrap glass-panel rounded-2xl p-6 text-center group block" aria-label="LinkedIn">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500/20 transition-colors">
+                        <iconify-icon icon="lucide:linkedin" width="20" class="text-blue-400"></iconify-icon>
+                    </div>
+                    <p class="text-xs font-medium text-white mb-1">LinkedIn</p>
+                    <p class="text-[10px] text-neutral-500">/in/eduardo-oliveira</p>
+                </a>
+
+                <!-- GitHub -->
+                <a href="#" class="animate-on-scroll delay-400 contact-icon-wrap glass-panel rounded-2xl p-6 text-center group block" aria-label="GitHub">
+                    <div class="w-12 h-12 rounded-xl bg-neutral-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-neutral-500/20 transition-colors">
+                        <iconify-icon icon="lucide:github" width="20" class="text-neutral-400"></iconify-icon>
+                    </div>
+                    <p class="text-xs font-medium text-white mb-1">GitHub</p>
+                    <p class="text-[10px] text-neutral-500">@eduardo-oliveira</p>
+                </a>
+            </div>
+
+            <!-- CTA Final -->
+            <div class="animate-on-scroll delay-500 mt-16 text-center">
+                <a href="mailto:eduardooliveirasilva9946@gmail.com" class="btn-shine inline-flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full text-sm font-medium hover:bg-neutral-200 transition-all hover:shadow-lg hover:shadow-white/10 group">
+                    Enviar um Email
+                    <iconify-icon icon="lucide:arrow-right" width="16" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative px-6 py-12 border-t border-white/5">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-neutral-600">
+                © 2025 Eduardo Oliveira da Silva. Todos os direitos reservados.
+            </p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="text-neutral-600 hover:text-neutral-400 transition-colors" aria-label="LinkedIn">
+                    <iconify-icon icon="lucide:linkedin" width="16"></iconify-icon>
+                </a>
+                <a href="#" class="text-neutral-600 hover:text-neutral-400 transition-colors" aria-label="GitHub">
+                    <iconify-icon icon="lucide:github" width="16"></iconify-icon>
+                </a>
+                <a href="mailto:eduardooliveirasilva9946@gmail.com" class="text-neutral-600 hover:text-neutral-400 transition-colors" aria-label="Email">
+                    <iconify-icon icon="lucide:mail" width="16"></iconify-icon>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 transition-all opacity-0 translate-y-4 pointer-events-none" aria-label="Voltar ao topo" style="transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <iconify-icon icon="lucide:arrow-up" width="16"></iconify-icon>
+    </button>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let menuOpen = false;
+
+        menuToggle.addEventListener('click', () => {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('open', menuOpen);
+            menuToggle.innerHTML = menuOpen 
+                ? '<iconify-icon icon="lucide:x" width="22"></iconify-icon>' 
+                : '<iconify-icon icon="lucide:menu" width="22"></iconify-icon>';
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                menuOpen = false;
+                mobileMenu.classList.remove('open');
+                menuToggle.innerHTML = '<iconify-icon icon="lucide:menu" width="22"></iconify-icon>';
+            });
+        });
+
+        // Scroll-triggered animations using IntersectionObserver
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll, .animate-left, .animate-right, .animate-scale').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Project card mouse spotlight effect
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', x + 'px');
+                card.style.setProperty('--mouse-y', y + 'px');
+            });
+        });
+
+        // Back to top button
+        const backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.style.opacity = '1';
+                backToTop.style.transform = 'translateY(0)';
+                backToTop.style.pointerEvents = 'auto';
+            } else {
+                backToTop.style.opacity = '0';
+                backToTop.style.transform = 'translateY(16px)';
+                backToTop.style.pointerEvents = 'none';
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Active nav link highlight on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-white');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('text-white');
+                }
+            });
+        });
+
+        // Parallax effect on glow orbs (subtle)
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            document.querySelectorAll('.glow-orb').forEach((orb, i) => {
+                const speed = 0.03 + (i * 0.015);
+                orb.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Timeline dot activation on scroll
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const dot = entry.target.querySelector('.timeline-dot');
+                if (entry.isIntersecting && dot) {
+                    dot.classList.add('active');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        timelineItems.forEach(item => timelineObserver.observe(item));
+    </script>
+</body>
+</html>
